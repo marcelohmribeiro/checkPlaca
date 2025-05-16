@@ -172,7 +172,7 @@ export default function App() {
           onClick={handleCheck}
           disabled={loading}
           className={`mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all duration-300 flex items-center justify-center
-            ${loading ? 'opacity-50 cursor-not-allowed hover:bg-blue-600' : ''}`}
+              ${loading ? 'opacity-50 cursor-not-allowed hover:bg-blue-600' : ''}`}
         >
           {loading ? (
             <>
