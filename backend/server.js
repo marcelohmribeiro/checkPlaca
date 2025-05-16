@@ -1,25 +1,26 @@
-const express = require('express');
-const { pesquisa_placa } = require('api-placa');
-const cors = require('cors');
+const express = require('express')
+const { pesquisa_placa } = require('api-placa')
+const cors = require('cors')
+const app = express()
+const PORT = 3001
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
+app.use(cors())
+app.use(express.json())
 
 app.get("/", (req, res) => {
-    res.json("Bem vindo a API!");
-});
+    return res.json("Bem vindo a API!")
+})
 
+// Rota para consultar placa
 app.get("/placa/:plate", async (req, res) => {
-    const plate = req.params.plate.toUpperCase();
+    const plate = req.params.plate.toUpperCase()
 
     try {
         const resultado = await pesquisa_placa(plate);
-        res.json(resultado);
+        res.json(resultado)
     } catch (error) {
-        res.status(400).json({ error: 'Placa inválida ou não encontrada.' });
+        res.status(400).json({ error: 'Placa inválida ou não encontrada.' })
     }
-});
+})
 
-module.exports = app;  // exporta o app, sem app.listen()
+app.listen(PORT, () => console.log(`API rodando em http://localhost:${PORT}`))
