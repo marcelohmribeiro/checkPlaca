@@ -99,7 +99,7 @@ export default function App() {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3001/placa/${cleaned}`);
+      const response = await fetch(`https://check-placa-c3eq.vercel.app//placa/${cleaned}`);
       if (!response.ok) throw new Error('Erro ao buscar placa');
       const data = await response.json();
 
