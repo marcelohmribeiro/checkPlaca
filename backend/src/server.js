@@ -7,8 +7,12 @@ const PORT = 3001;
 app.use(cors()); // Habilita CORS para permitir requisições de outros domínios (como o front em React)
 app.use(express.json()); // Permite receber JSON no corpo da requisição
 
+app.get("/", (req, res) => {
+    return res.json("Bem vindo a API!")
+})
+
 // Rota para consultar placa
-app.get('/placa/:plate', async (req, res) => {
+app.get("/placa/:plate", async (req, res) => {
     const plate = req.params.plate.toUpperCase();
 
     try {
