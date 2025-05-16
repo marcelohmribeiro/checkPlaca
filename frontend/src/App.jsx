@@ -92,7 +92,7 @@ export default function App() {
 
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:3001/placa/${cleaned}`);
+      const response = await axios.get(`https://check-placa-c3eq.vercel.app/placa/${cleaned}`);
 
       const data = response.data;
 
