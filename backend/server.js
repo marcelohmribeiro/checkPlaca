@@ -1,7 +1,6 @@
 const express = require('express');
 const { pesquisa_placa } = require('api-placa');
 const cors = require('cors');
-const serverless = require('serverless-http');
 
 const app = express();
 
@@ -9,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    return res.json("Bem vindo à API!");
+    res.json("Bem vindo a API!");
 });
 
 app.get("/placa/:plate", async (req, res) => {
@@ -23,5 +22,4 @@ app.get("/placa/:plate", async (req, res) => {
     }
 });
 
-module.exports = app;
-module.exports.handler = serverless(app);
+module.exports = app;  // exporta o app, sem app.listen()

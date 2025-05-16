@@ -1,13 +1,6 @@
 import { useState } from 'react';
-import {
-  FaCheckCircle,
-  FaTimesCircle,
-  FaExclamationCircle,
-  FaCar,
-  FaSpinner,
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-} from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaExclamationCircle, FaCar, FaSpinner, FaMapMarkerAlt, FaCalendarAlt, } from 'react-icons/fa';
+import axios from 'axios'
 
 function prefixToNumber(prefix) {
   const A = 'A'.charCodeAt(0);
@@ -99,9 +92,9 @@ export default function App() {
 
     setLoading(true);
     try {
-      const response = await fetch(`https://check-placa-c3eq.vercel.app/placa/${cleaned}`);
-      if (!response.ok) throw new Error('Erro ao buscar placa');
-      const data = await response.json();
+      const response = await axios.get(`http://localhost:3001/placa/${cleaned}`);
+
+      const data = response.data;
 
       setResult({
         type: 'success',
