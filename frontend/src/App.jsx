@@ -183,9 +183,8 @@ export default function App() {
             'Verificar'
           )}
         </button>
-        {result && <hr className='mt-6' />}
+        {result && result.type !== 'success' && <hr className='mt-6' />}
         {result && result.type !== 'success' && (
-
           <div
             className={`mt-6 flex items-center p-3 rounded-lg shadow-md text-sm ${result.type === 'error'
               ? 'bg-red-100 text-red-800'
