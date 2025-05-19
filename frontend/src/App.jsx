@@ -1,68 +1,7 @@
 import { useState } from 'react';
-import { FaCheckCircle, FaTimesCircle, FaExclamationCircle, FaCar, FaSpinner, FaMapMarkerAlt, FaCalendarAlt, } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaExclamationCircle, FaCar, FaSpinner, FaMapMarkerAlt, FaCalendarAlt, FaPalette } from 'react-icons/fa';
 import axios from 'axios';
-
-function prefixoParaNumero(prefixo) {
-  const A = 'A'.charCodeAt(0)
-  return (
-    (prefixo.charCodeAt(0) - A) * 26 * 26 +
-    (prefixo.charCodeAt(1) - A) * 26 +
-    (prefixo.charCodeAt(2) - A)
-  )
-}
-
-const combinacoesSul = {
-  PR: [
-    ['AAA', 'AZZ'],
-    ['BAA', 'BZZ'],
-  ],
-  SC: [
-    ['BAH', 'BCN'],
-    ['MAA', 'MAZ'],
-  ],
-  RS: [
-    ['CDE', 'CDZ'],
-    ['IBI', 'ICZ'],
-  ]
-};
-
-function estaNoIntervalo(prefixo, comeco, fim) {
-  const val = prefixoParaNumero(prefixo)
-  return val >= prefixoParaNumero(comeco) && val <= prefixoParaNumero(fim)
-}
-
-function estadoPlaca(placa) {
-  const prefix = placa.slice(0, 3).toUpperCase()
-
-  for (const [estado, intervalos] of Object.entries(combinacoesSul)) {
-    if (intervalos.some(([comeco, fim]) => estaNoIntervalo(prefix, comeco, fim))) {
-      const name = estado === 'PR' ? 'Paraná'
-        : estado === 'SC' ? 'Santa Catarina'
-          : 'Rio Grande do Sul'
-      return { name, abbr: estado }
-    }
-  }
-  return null
-}
-
-function PlacaMercoSul({ placa }) {
-  const formatted = placa.length === 7 ? `${placa.slice(0, 3)}${placa.slice(3)}` : placa
-
-  return (
-    <div className="mx-auto mt-6 w-[350px] rounded-lg border-[3px] border-black bg-white shadow-md font-['Roboto_Mono'] relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-8 bg-blue-800 text-white flex items-center justify-between px-3 text-xs font-semibold tracking-wide">
-        <span className="text-[10px] opacity-80">MERCOSUL</span>
-        <span className="text-sm">BRASIL</span>
-        <span className="text-xl">🇧🇷</span>
-      </div>
-      <div className="flex items-center justify-between pt-10 px-3 pb-2">
-        <div className="text-[12px] font-bold">BR</div>
-        <div className="text-4xl font-black tracking-[6px] text-center ml-4 w-full">{formatted}</div>
-        <div className="w-[30px]" />
-      </div>
-    </div>
-  )
-}
+import Placas from './components/Placas';
 
 export default function App() {
   const [placa, setPlaca] = useState('')
@@ -80,22 +19,12 @@ export default function App() {
       return
     }
 
-    const state = estadoPlaca(cleaned)
-    if (!state) {
-      setResult({
-        type: 'error',
-        message: 'Esta placa não pertence à região Sul.',
-      })
-      return
-    }
-
     setLoading(true)
     try {
       const response = await axios.get(`http://localhost:3001/placa/${cleaned}`)
-
       const data = response.data
 
-      if (data.marca === '---' || data.modelo === '---') {
+      if (!data.Marca || data.Marca === '---') {
         setResult({
           type: 'error',
           message: 'Não foram encontradas informações detalhadas para esta placa.',
@@ -103,24 +32,24 @@ export default function App() {
       } else {
         setResult({
           type: 'success',
-          estado: state.name,
-          stateAbbr: state.abbr,
+          estado: data.UF || 'Desconhecido',
+          cidade: data.municipio || 'Desconhecida',
           placa: cleaned,
-          modelo: `${data.marca} ${data.modelo}`,
-          ano: data.AnoModelo,
-          marca: data.marca,
+          modelo: data.Modelo,
+          ano: data['Ano Modelo'] || 'Desconhecido',
+          marca: data.Marca,
+          cor: data.cor || 'Desconhecida',
         })
       }
     } catch (error) {
       setResult({
         type: 'error',
-        message: 'Placa inválida.',
+        message: 'Placa inválida ou não encontrada.',
       })
     }
     setLoading(false)
   }
 
-  // Recebe a placa
   const handleInputChange = (e) => {
     const value = e.target.value.toUpperCase()
     setPlaca(value)
@@ -147,12 +76,12 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center px-4 py-12 font-['Poppins']">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md transition-all duration-300">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-1">Verificador de Placas</h1>
-        <p className="text-center text-gray-500 text-sm font-serif mb-6">Região Sul</p>
+        <p className="text-center text-gray-500 text-sm font-serif mb-6">Consulta para todo o Brasil</p>
 
         <div className="relative">
           <input
             type="text"
-            placeholder="PLACA: AAA0000"
+            placeholder="DIGITE A PLACA"
             className={`w-full p-3 pr-10 border rounded-lg focus:outline-none text-center text-lg uppercase tracking-widest placeholder-gray-400 transition duration-300 ${inputBorderClasses()}`}
             value={placa}
             onChange={handleInputChange}
@@ -182,6 +111,7 @@ export default function App() {
             'Verificar'
           )}
         </button>
+
         {result && <hr className='mt-6' />}
         {result && result.type !== 'success' && (
           <div
@@ -198,14 +128,19 @@ export default function App() {
         {result && result.type === 'success' && (
           <>
             <div className="mt-6">
-              <PlacaMercoSul placa={result.placa} />
+              <Placas placa={result.placa} uf={result.estado} municipio={result.cidade} />
             </div>
-
             <div className="mt-6 grid gap-3 text-sm text-gray-700">
               <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
                 <FaMapMarkerAlt className="text-blue-500 mr-3" />
                 <span>
                   <strong>Estado:</strong> {result.estado}
+                </span>
+              </div>
+              <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
+                <FaMapMarkerAlt className="text-blue-500 mr-3" />
+                <span>
+                  <strong>Cidade:</strong> {result.cidade}
                 </span>
               </div>
               <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
@@ -218,6 +153,12 @@ export default function App() {
                 <FaCar className="text-blue-500 mr-3" />
                 <span>
                   <strong>Modelo:</strong> {result.modelo}
+                </span>
+              </div>
+              <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
+                <FaPalette className="text-blue-500 mr-3" />
+                <span>
+                  <strong>Cor:</strong> {result.cor}
                 </span>
               </div>
               <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">

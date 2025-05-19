@@ -1,9 +1,11 @@
 {
+  "type": "module",
   "dependencies": {
-    "api-placa": "^0.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "serverless-http": "^3.2.0"
+    "puppeteer": "^24.8.2",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   },
   "scripts": {
     "start": "node server.js"
