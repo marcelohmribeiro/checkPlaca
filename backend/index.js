@@ -7,6 +7,10 @@ puppeteer.use(StealthPlugin())
 const app = express()
 app.use(cors())
 
+app.get('/', async (req, res) => {
+    return res.json('Bem vindo a API!')
+})
+
 app.get('/placa/:placa', async (req, res) => {
     const placa = req.params.placa.toUpperCase()
 
