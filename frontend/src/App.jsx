@@ -134,25 +134,13 @@ export default function App() {
               <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
                 <FaMapMarkerAlt className="text-blue-500 mr-3" />
                 <span>
-                  <strong>Estado:</strong> {result.estado}
-                </span>
-              </div>
-              <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
-                <FaMapMarkerAlt className="text-blue-500 mr-3" />
-                <span>
-                  <strong>Cidade:</strong> {result.cidade}
+                  <strong>UF/Cidade:</strong> {result.estado} - {result.cidade}
                 </span>
               </div>
               <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
                 <FaCar className="text-blue-500 mr-3" />
                 <span>
-                  <strong>Marca:</strong> {result.marca}
-                </span>
-              </div>
-              <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
-                <FaCar className="text-blue-500 mr-3" />
-                <span>
-                  <strong>Modelo:</strong> {result.modelo}
+                  <strong>Modelo:</strong> {result.marca} - {result.modelo}
                 </span>
               </div>
               <div className="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm">
